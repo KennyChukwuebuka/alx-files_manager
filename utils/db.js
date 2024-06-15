@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 class DBClient {
-  constructor() {
+  constructor () {
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
     const database = process.env.DB_DATABASE || 'files_manager';
@@ -21,18 +21,18 @@ class DBClient {
     });
   }
 
-  isAlive() {
+  isAlive () {
     return this.client.topology && this.client.topology.isConnected();
   }
 
-  async nbUsers() {
+  async nbUsers () {
     if (this.isAlive()) {
       return this.db.collection('users').countDocuments();
     }
     return 0;
   }
 
-  async nbFiles() {
+  async nbFiles () {
     if (this.isAlive()) {
       return this.db.collection('files').countDocuments();
     }
