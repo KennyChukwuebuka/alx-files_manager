@@ -9,9 +9,9 @@ class RedisClient {
     });
   }
 
-  async isAlive() {
+  isAlive() {
     try {
-      await this.client.ping();
+      this.client.ping();
       return true;
     } catch (err) {
       return false;
