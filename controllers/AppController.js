@@ -14,7 +14,7 @@ module.exports.getStatus = async (req, res) => {
 // routes
 module.exports.getStats = async (req, res) => {
   res.status(200).json({
-    nbUsers: await dbClient.nbUsers(),
-    nbFiles: await dbClient.nbFiles(),
+    users: await dbClient.nbUsers(),
+    files: await dbClient.nbFiles(),
   });
 };
