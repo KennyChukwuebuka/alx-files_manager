@@ -1,6 +1,6 @@
 // utils/db.js
 
-import { MongoClient } from 'mongodb';
+const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
@@ -15,6 +15,7 @@ class DBClient {
       console.log('Connected to MongoDB');
     }).catch((err) => {
       console.error('Failed to connect to MongoDB', err);
+      process.exit(1);
     });
   }
 
