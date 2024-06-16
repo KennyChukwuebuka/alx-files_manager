@@ -5,6 +5,9 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
+// use middleware
+app.use(express.json());
+
 // import routes
 const routes = require('./routes/index');
 
