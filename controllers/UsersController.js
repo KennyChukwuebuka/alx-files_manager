@@ -1,6 +1,7 @@
 // UsersController.js
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const { ObjectId } = require('mongodb'); // Import ObjectId directly from mongodb
+const ObjectId = require('mongodb'); // Import ObjectId directly from mongodb
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
