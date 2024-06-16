@@ -1,5 +1,6 @@
+// UsersController.js
 const crypto = require('crypto');
-const { dbClient, ObjectId } = require('../utils/db'); // Import ObjectId
+const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
 class UsersController {
@@ -12,10 +13,6 @@ class UsersController {
 
     if (!password) {
       return res.status(400).json({ error: 'Missing password' });
-    }
-
-    if (!dbClient.isAlive()) {
-      return res.status(500).json({ error: 'Database is not initialized' });
     }
 
     const existingUser = await dbClient.db.collection('users').findOne({ email });
@@ -37,12 +34,11 @@ class UsersController {
       email,
     });
 
-    return null; // Explicit return to satisfy linting rule
+    return result;
   }
 
   static async getMe(req, res) {
     const token = req.headers['x-token'];
-
     if (!token) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -53,11 +49,7 @@ class UsersController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    if (!dbClient.isAlive()) {
-      return res.status(500).json({ error: 'Database is not initialized' });
-    }
-
-    const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(userId) }, { projection: { email: 1 } });
+    const user = await dbClient.db.collection('users').findOne({ _id: dbClient.ObjectId(userId) }, { projection: { email: 1 } });
 
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -68,7 +60,7 @@ class UsersController {
       email: user.email,
     });
 
-    return null; // Explicit return to satisfy linting rule
+    return user;
   }
 }
 
