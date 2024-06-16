@@ -23,7 +23,5 @@ router.get('/connect', AuthController.connect);
 // Get/disconnect
 router.get('/disconnect', AuthController.disconnect);
 
-
-
 // export routes
 module.exports = router;
