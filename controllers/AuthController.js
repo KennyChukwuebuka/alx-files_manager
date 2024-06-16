@@ -5,7 +5,7 @@ const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
 
 class AuthController {
-  static async getConnect(req, res) {
+  static async getConnect (req, res) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Basic ')) {
@@ -33,7 +33,7 @@ class AuthController {
     return token;
   }
 
-  static async getDisconnect(req, res) {
+  static async getDisconnect (req, res) {
     const token = req.headers['x-token'];
 
     if (!token) {
