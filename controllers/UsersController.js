@@ -32,6 +32,8 @@ class UsersController {
       id: result.insertedId,
       email,
     });
+
+    return result;
   }
 }
 
