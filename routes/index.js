@@ -18,10 +18,10 @@ router.post('/users', UsersController.postNew);
 router.get('/users/me', UsersController.getMe);
 
 // Get/connect
-router.get('/connect', AuthController.connect);
+router.get('/connect', AuthController.getConnect);
 
 // Get/disconnect
-router.get('/disconnect', AuthController.disconnect);
+router.get('/disconnect', AuthController.getDisconnect);
 
 // export routes
 module.exports = router;
