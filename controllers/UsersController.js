@@ -5,7 +5,7 @@ const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
 class UsersController {
-  static async postNew (req, res) {
+  static async postNew(req, res) {
     try {
       const { email, password } = req.body;
 
@@ -26,14 +26,14 @@ class UsersController {
 
       const newUser = {
         email,
-        password: hashedPassword
+        password: hashedPassword,
       };
 
       const result = await dbClient.db.collection('users').insertOne(newUser);
 
       res.status(201).json({
         id: result.insertedId,
-        email
+        email,
       });
 
       return result;
@@ -43,7 +43,7 @@ class UsersController {
     }
   }
 
-  static async getMe (req, res) {
+  static async getMe(req, res) {
     try {
       const token = req.headers['x-token'];
       if (!token) {
@@ -56,7 +56,7 @@ class UsersController {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const user = await dbClient.db.collection('users').findOne({ _id:  ObjectId(userId) }, { projection: { email: 1 } });
+      const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(userId) }, { projection: { email: 1 } });
 
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -64,7 +64,7 @@ class UsersController {
 
       res.status(200).json({
         id: user._id,
-        email: user.email
+        email: user.email,
       });
 
       return user;
