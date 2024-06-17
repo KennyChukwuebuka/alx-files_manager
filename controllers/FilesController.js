@@ -13,14 +13,12 @@ if (!fs.existsSync(folderPath)) {
 class FilesController {
   static async postUpload(req, res) {
     try {
-      // Retrieve the user based on the token
       const token = req.headers['x-token'];
       if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
       const userId = await redisClient.get(`auth_${token}`);
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-      // Validate request body
       const {
         name, type, parentId = 0, isPublic = false, data,
       } = req.body;
@@ -38,7 +36,6 @@ class FilesController {
         if (parentFile.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
       }
 
-      // Prepare the file document
       const fileDoc = {
         userId: new ObjectId(userId),
         name,
@@ -100,11 +97,15 @@ class FilesController {
         parentId: parentId === '0' ? 0 : new ObjectId(parentId),
       };
 
+      console.log('Query:', query);
+
       const files = await dbClient.db.collection('files')
         .find(query)
         .skip(page * 20)
         .limit(20)
         .toArray();
+
+      console.log('Files:', files);
 
       return res.status(200).json(files);
     } catch (error) {
