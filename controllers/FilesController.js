@@ -14,13 +14,19 @@ class FilesController {
   static async postUpload(req, res) {
     try {
       // Retrieve the user based on the token
-      const { token } = req.headers;
+      const token = req.headers['x-token'];
+      console.log('Received token:', token);
+
       if (!token) {
+        console.log('No token provided');
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
       const userId = await redisClient.get(`auth_${token}`);
+      console.log('Retrieved userId from Redis:', userId);
+
       if (!userId) {
+        console.log('User not found in Redis for token:', token);
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
