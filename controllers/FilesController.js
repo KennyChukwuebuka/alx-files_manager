@@ -83,16 +83,18 @@ class FilesController {
       if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
       const fileId = req.params.id;
+      if (!ObjectId.isValid(fileId)) return res.status(404).json({ error: 'Not found' });
+
       const file = await dbClient.db.collection('files').findOne({ _id: new ObjectId(fileId), userId: new ObjectId(userId) });
       if (!file) return res.status(404).json({ error: 'Not found' });
 
       const responseFile = {
-        id: file._id,
-        userId: file.userId,
+        id: file._id.toString(),
+        userId: file.userId.toString(),
         name: file.name,
         type: file.type,
         isPublic: file.isPublic,
-        parentId: file.parentId,
+        parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
       };
 
       return res.status(200).json(responseFile);
@@ -116,8 +118,10 @@ class FilesController {
       let query;
       if (parentId === '0') {
         query = { userId: new ObjectId(userId), parentId: 0 };
-      } else {
+      } else if (ObjectId.isValid(parentId)) {
         query = { userId: new ObjectId(userId), parentId: new ObjectId(parentId) };
+      } else {
+        query = { userId: new ObjectId(userId), parentId }; // Handle as string if not ObjectId
       }
 
       const files = await dbClient.db.collection('files')
@@ -127,12 +131,12 @@ class FilesController {
         .toArray();
 
       const responseFiles = files.map((file) => ({
-        id: file._id,
-        userId: file.userId,
+        id: file._id.toString(),
+        userId: file.userId.toString(),
         name: file.name,
         type: file.type,
         isPublic: file.isPublic,
-        parentId: file.parentId,
+        parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
       }));
 
       return res.status(200).json(responseFiles);
