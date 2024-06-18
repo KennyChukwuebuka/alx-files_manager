@@ -45,8 +45,13 @@ class FilesController {
       };
 
       if (type === 'folder') {
-        await dbClient.db.collection('files').insertOne(fileDoc);
-        return res.status(201).json(fileDoc);
+        const result = await dbClient.db.collection('files').insertOne(fileDoc);
+        const responseDoc = {
+          id: result.insertedId,
+          ...fileDoc,
+        };
+        delete responseDoc._id;
+        return res.status(201).json(responseDoc);
       }
 
       const filePath = path.join(folderPath, uuidv4());
@@ -54,8 +59,15 @@ class FilesController {
       fs.writeFileSync(filePath, fileData);
       fileDoc.localPath = filePath;
 
-      await dbClient.db.collection('files').insertOne(fileDoc);
-      return res.status(201).json(fileDoc);
+      const result = await dbClient.db.collection('files').insertOne(fileDoc);
+      const responseDoc = {
+        id: result.insertedId,
+        ...fileDoc,
+      };
+      delete responseDoc._id;
+      delete responseDoc.localPath;
+
+      return res.status(201).json(responseDoc);
     } catch (error) {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
