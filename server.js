@@ -1,20 +1,15 @@
-// server.js
-
-const express = require('express');
+import express from 'express';
+import controllerRouting from './routes/index';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// use middleware
-app.use(express.json());
+app.use(express.json()); // for parsing application/json
 
-// import routes
-const routes = require('./routes/index');
+controllerRouting(app);
 
-// use routes
-app.use('/', routes);
-
-// start server
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
+
+export default app;
