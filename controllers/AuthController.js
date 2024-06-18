@@ -5,6 +5,13 @@ const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
 
 class AuthController {
+  /**
+   * Authenticate user based on the provided authorization header.
+   *
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @return {String} The generated token upon successful user authentication.
+   */
   static async getConnect(req, res) {
     const authHeader = req.headers.authorization;
 
