@@ -86,9 +86,18 @@ class FilesController {
       const file = await dbClient.db.collection('files').findOne({ _id: new ObjectId(fileId), userId: new ObjectId(userId) });
       if (!file) return res.status(404).json({ error: 'Not found' });
 
-      return res.status(200).json(file);
+      const responseFile = {
+        id: file._id,
+        userId: file.userId,
+        name: file.name,
+        type: file.type,
+        isPublic: file.isPublic,
+        parentId: file.parentId,
+      };
+
+      return res.status(200).json(responseFile);
     } catch (error) {
-      console.error('Error in getFileById:', error);
+      console.error('Error in getShow:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
@@ -104,12 +113,12 @@ class FilesController {
       const parentId = req.query.parentId || '0';
       const page = parseInt(req.query.page, 10) || 0;
 
-      const query = {
-        userId: new ObjectId(userId),
-        parentId: parentId === '0' ? 0 : new ObjectId(parentId),
-      };
-
-      console.log('Query:', query);
+      let query;
+      if (parentId === '0') {
+        query = { userId: new ObjectId(userId), parentId: 0 };
+      } else {
+        query = { userId: new ObjectId(userId), parentId: new ObjectId(parentId) };
+      }
 
       const files = await dbClient.db.collection('files')
         .find(query)
@@ -117,11 +126,18 @@ class FilesController {
         .limit(20)
         .toArray();
 
-      console.log('Files:', files);
+      const responseFiles = files.map((file) => ({
+        id: file._id,
+        userId: file.userId,
+        name: file.name,
+        type: file.type,
+        isPublic: file.isPublic,
+        parentId: file.parentId,
+      }));
 
-      return res.status(200).json(files);
+      return res.status(200).json(responseFiles);
     } catch (error) {
-      console.error('Error in getFiles:', error);
+      console.error('Error in getIndex:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
