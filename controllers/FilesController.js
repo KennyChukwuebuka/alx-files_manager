@@ -227,10 +227,14 @@ class FilesController {
       const userId = token ? await redisClient.get(`auth_${token}`) : null;
       const fileId = req.params.id;
 
-      if (!ObjectId.isValid(fileId)) return res.status(404).json({ error: 'Not found' });
+      if (!ObjectId.isValid(fileId)) {
+        return res.status(404).json({ error: 'Not found' });
+      }
 
       const file = await dbClient.db.collection('files').findOne({ _id: new ObjectId(fileId) });
-      if (!file) return res.status(404).json({ error: 'Not found' });
+      if (!file) {
+        return res.status(404).json({ error: 'Not found' });
+      }
 
       if (file.type === 'folder') {
         return res.status(400).json({ error: "A folder doesn't have content" });
@@ -253,7 +257,7 @@ class FilesController {
       res.setHeader('Content-Type', mimeType);
       return res.status(200).send(fileContent);
     } catch (error) {
-      console.error('Error in getData:', error);
+      console.error('Error in getFile:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
